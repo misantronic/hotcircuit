@@ -1,48 +1,65 @@
-var ctx = c.getContext("2d");
-var theta = 0, 
-	x1 = 50, x2 = 100, 
-	y1 = 50, y2 = 100;
-setInterval(function() {
-	// clear all
-	ctx.clearRect(0, 0, c.width, c.height);
+var c = C.getContext("2d"),
+	d = 0,
+	x = 50, X = 100,
+	y = 50, Y = 100;
 
-	// rotate line
-	var cx = (x1 + x2) / 2
-	var cy = (y1 + y2) / 2
+var id = setInterval(() => {
+	var M = Math,
+		cx = (x + X) / 2,
+		cy = (y + Y) / 2,
+		rad = d * M.PI / 180,
+		cosang = M.cos(rad),
+		sinang = M.sin(rad),
+		tx1 = x - cx,
+		ty1 = y - cy,
+		tx2 = X - cx,
+		ty2 = Y - cy;
 
-	var rad = theta * Math.PI / 180;
-	
-	var cosang = Math.cos(rad),
-		sinang = Math.sin(rad);
+	with(c) {
+		// clear all
+		c.clearRect(0, 0, C.width, C.height);
 
-	var tx1 = x1-cx, 
-		ty1 = y1-cy;
+		var x1 = ( tx1 * cosang + ty1 * sinang) + cx;
+		var y1 = (-tx1 * sinang + ty1 * cosang) + cy;
+		var x2 = ( tx2 * cosang + ty2 * sinang) + cx;
+		var y2 = (-tx2 * sinang + ty2 * cosang) + cy;
 
-	var p1x = ( tx1*cosang + ty1*sinang) + cx;
-	var p1y = (-tx1*sinang + ty1*cosang) + cy;
+		// draw line
+		c.lineWidth = 1;
+		c.strokeStyle = '#000000';
+		c.beginPath();
+		c.moveTo(x1, y1);
+		c.lineTo(x2, y2);
+		c.stroke();
+		c.closePath();
 
-	var tx2 = x2-cx, 
-		ty2 = y2-cy;
+		// draw sample world
+		c.strokeStyle = '#ff0000';
+		c.beginPath();
+		c.moveTo(1, 1);
+		c.lineTo(99, 1);
+		c.lineTo(99, 99);
+		c.stroke();
+		c.closePath();
 
-	var p2x = ( tx2*cosang + ty2*sinang) + cx;
-	var p2y = (-tx2*sinang + ty2*cosang) + cy;
+		var imageData = c.getImageData(x1 - 1, y1 - 1, x1, x2).data;
+		var red = imageData[0];
+		if(red) {
+			clearInterval(id);
+		}
 
-	// draw line
-	ctx.beginPath();
-	ctx.moveTo(p1x, p1y);
-	ctx.lineTo(p2x, p2y);
-	ctx.stroke();
+	}
 
-	theta += 5;
+	d++
 
-}, 20);
+}, 16.7);
 
-document.body.onkeydown = function(e) {
+document.body.onkeydown = (e) => {
 	var code = e.which;
-	if(code == 38) { y2 -= 8; y1 -= 8 };
-	if(code == 39) { x2 += 8; x1 += 8 };
-	if(code == 40) { y2 += 8; y1 += 8 };
-	if(code == 37) { x2 -= 8; x1 -= 8 };
+	if(code == 38) { Y -= 8; y -= 8 }
+	if(code == 39) { X += 8; x += 8 }
+	if(code == 40) { Y += 8; y += 8 }
+	if(code == 37) { X -= 8; x -= 8 }
 
-	console.log( [ x1, y1 ], [ x2, y2 ] );
+	//console.log( [ x, y ], [ X, Y ] );
 };
