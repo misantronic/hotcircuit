@@ -25,7 +25,6 @@ var id = setInterval(() => {
 		var y2 = (-tx2 * sinang + ty2 * cosang) + cy;
 
 		// draw line
-		c.lineWidth = 1;
 		c.strokeStyle = '#000000';
 		c.beginPath();
 		c.moveTo(x1, y1);
@@ -37,14 +36,14 @@ var id = setInterval(() => {
 		c.strokeStyle = '#ff0000';
 		c.beginPath();
 		c.moveTo(1, 1);
-		c.lineTo(99, 1);
-		c.lineTo(99, 99);
+		c.lineTo(150, 1);
+		c.lineTo(150, 150);
 		c.stroke();
 		c.closePath();
 
-		var imageData = c.getImageData(x1 - 1, y1 - 1, x1, x2).data;
-		var red = imageData[0];
-		if(red) {
+		var imgData1 = c.getImageData(x1, y1, x1, y1).data;
+		var imgData2 = c.getImageData(x2, y2, x2, y2).data;
+		if(imgData1[0] || imgData2[0]) {
 			clearInterval(id);
 		}
 
